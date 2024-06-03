@@ -1,28 +1,35 @@
-plugins {
-    id 'java'
-}
+apply plugin: 'java'
 
 version '1.0-SNAPSHOT'
 
-sourceCompatibility = 1.8
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
 
-compileJava.options.encoding "UTF-8"
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
 
 repositories {
     mavenLocal()
-    maven { url 'http://maven.aliyun.com/nexus/content/groups/public' }
+    maven { url 'https://maven.aliyun.com/nexus/content/groups/public' }
     mavenCentral()
 }
 
 dependencies {
-    testCompile("org.junit.jupiter:junit-jupiter-engine:5.5.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.5.2")
 }
 
 jar {
     manifest {
         attributes(
-                'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+                'Class-Path': configurations.runtimeClasspath.collect { it.getName() }.join(' '),
                 'Main-Class': 'com.myzom.client.MainClient'
         )
     }
+}
+
+test {
+    useJUnitPlatform()
 }
